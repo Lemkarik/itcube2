@@ -1,5 +1,6 @@
 import sqlalchemy
 from app import db
+from sqlalchemy import orm
 
 
 class Adverts(db.Model):
@@ -9,4 +10,5 @@ class Adverts(db.Model):
     title = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     description = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     position = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    seller = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    seller = sqlalchemy.Column(sqlalchemy.String, sqlalchemy.ForeignKey("users.id"), nullable=False)
+    user = orm.relation('User')

@@ -1,7 +1,7 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect,abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, login_user, current_user
+from flask_login import LoginManager, login_user, current_user, login_required
 
 from config import Develop
 
@@ -13,6 +13,7 @@ login_manager.init_app(app)
 
 from data.users import User
 from data.adverts import Adverts
+from data.basket import Basket
 from forms.user import RegisterForm, LoginForm
 from forms.advert import EditAdvertForm
 from data.__all_models import *
@@ -85,19 +86,54 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
-@app.route('/edit_advert', methods=['GET', 'POST'])
-def add_advert():
+@app.route('/add_advert', methods=['GET', 'POST'])
+@app.route('/edit_advert/<int:id>', methods=['GET', 'POST'])
+@login_required
+def add_advert(id=0):
     form = EditAdvertForm()
-    if form.validate_on_submit():
-        db_sess = db.session
-        advert = Adverts(
-            title=form.title.data,
-            description=form.description.data,
-            position=form.position.data
-        )
-        advert.set_password(form.password.data)
-        db_sess.add(advert)
+    if not id:
+        if form.validate_on_submit():
+            db_sess = db.session
+            advert = Adverts(
+                title=form.title.data,
+                description=form.description.data,
+                position=form.position.data
+            )
+            advert.set_password(form.password.data)
+            db_sess.add(advert)
+            db_sess.commit()
+            login_user(advert, remember=True)
+            return redirect("/")
+        return render_template('edit_advert.html', title='Создание объявления', form=form)
+    else:
+        if form.validate_on_submit():
+            db_sess = db.session
+            advert = db_sess.query(Adverts).filter(Adverts.user == current_user).first()
+            if advert:
+                advert.title = form.title.data
+                advert.description = form.description.data
+                db_sess.commit()
+                return redirect('/')
+        return render_template('edit_advert.html', title='Редактирование объявления', form=form)
+
+
+@app.route('/delete_advert/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_advert(id):
+    db_sess = db.session
+    news = db_sess.query(Adverts).filter(Adverts.id == id,
+                                         Adverts.user == current_user
+                                         ).first()
+    if news:
+        db_sess.delete(news)
         db_sess.commit()
-        login_user(advert, remember=True)
-        return redirect("/")
-    return render_template('edit_advert.html', title='Создание объявления', form=form)
+    else:
+        abort(404)
+    return redirect('/')
+
+
+@app.route('/basket', methods=['GET', 'POST'])
+@login_required
+def basket():
+    db_sess = db.session
+    adverts = db_sess.query(Basket)
