@@ -38,9 +38,11 @@ def load_user(user_id):
 
 
 @app.route("/")
-def index():
-    # db_sess = db_session.create_session()
-    return render_template("index.html")
+@app.route("/<string:search>")
+def index(search=''):
+    adverts = db.session.query(Adverts).filter((Adverts.title.like(f'%{search}%'))
+                                               | (Adverts.description.like(f'%{search}%')))
+    return render_template("index.html", adverts=adverts)
 
 
 @app.route('/register', methods=['GET', 'POST'])
