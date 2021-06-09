@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, current_user
 
 from config import Develop
 
@@ -14,6 +14,7 @@ login_manager.init_app(app)
 from data.users import User
 from data.adverts import Adverts
 from forms.user import RegisterForm, LoginForm
+from forms.advert import EditAdvertForm
 from data.__all_models import *
 
 
@@ -60,12 +61,13 @@ def reqister():
             name=form.name.data,
             email=form.email.data,
             position=form.position.data,
-            role=form.role.data
+            role={'Продавец': True, 'Покупатель': False}[form.role.data]
         )
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect('/login')
+        login_user(user, remember=True)
+        return redirect("/")
     return render_template('register.html', title='Регистрация', form=form)
 
 
@@ -81,3 +83,21 @@ def login():
                                message="Неправильный логин или пароль",
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route('/edit_advert', methods=['GET', 'POST'])
+def add_advert():
+    form = EditAdvertForm()
+    if form.validate_on_submit():
+        db_sess = db.session
+        advert = Adverts(
+            title=form.title.data,
+            description=form.description.data,
+            position=form.position.data
+        )
+        advert.set_password(form.password.data)
+        db_sess.add(advert)
+        db_sess.commit()
+        login_user(advert, remember=True)
+        return redirect("/")
+    return render_template('edit_advert.html', title='Создание объявления', form=form)
