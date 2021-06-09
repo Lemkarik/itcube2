@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3 mt-4">
+        {{ form.name(class='form-control',
+        placeholder=form.name.label.text) }}
+    </div>
+    <div class="mb-3">
+        {{ form.email(class='form-control',
+        placeholder=form.email.label.text) }}
+    </div>
+    <div class="mb-3">
+        <div class="btn-group" role="group">
+            {% for elem in form.position %}
+            {{ elem(class="btn-check") }}
+            {{ elem.label(class="btn btn-outline-primary") }}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="mb-3">
+        <div class="btn-group" role="group">
+            {% for elem in form.role %}
+            {{ elem(class="btn-check") }}
+            {{ elem.label(class="btn btn-outline-primary") }}
+            {% endfor %}
+        </div>
+
+    </div>
+    <div class="mb-3">
+        {{ form.password(class='form-control',
+        placeholder=form.password.label.text) }}
+    </div>
+    <div class="mb-3">
+        {{ form.password_again(class='form-control',
+        placeholder=form.password_again.label.text) }}
+    </div>
+    <div class="mb-3">
+        {{ form.submit(class='btn btn-primary',
+        placeholder=form.password_again.label.text) }}
+    </div>
+
+</form>
+
+{% endblock %}
