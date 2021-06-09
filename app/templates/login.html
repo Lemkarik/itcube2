@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3 mt-4">
+        {{ form.email(class='form-control',
+        placeholder=form.email.label.text) }}
+    </div>
+    <div class="mb-3">
+        {{ form.password(class='form-control',
+        placeholder=form.password.label.text) }}
+    </div>
+    <div class="mb-3">
+        {{ form.remember_me() }}
+        {{ form.remember_me.label }}
+    </div>
+    <div class="mb-3">
+        {{ form.submit(class='btn btn-primary',
+        placeholder=form.submit.label.text) }}
+    </div>
+
+</form>
+
+{% endblock %}
