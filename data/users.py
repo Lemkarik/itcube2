@@ -11,3 +11,4 @@ class User(db.Model):
     email = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     role = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False)
+    balance = sqlalchemy.Column(sqlalchemy.Integer, default=99999)
