@@ -3,7 +3,7 @@ from app import db
 import sqlalchemy
 
 
-class Adverts(db.Model):
+class Advert(db.Model):
     __tablename__ = 'users'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
