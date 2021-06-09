@@ -2,5 +2,8 @@
 
 {% block content %}
 <h1>Объявления</h1>
-
+{% for item in adverts %}
+    item.title<br>
+    item.description<br>
+{% endfor %}
 {% endblock %}

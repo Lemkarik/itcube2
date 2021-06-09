@@ -136,4 +136,6 @@ def delete_advert(id):
 @login_required
 def basket():
     db_sess = db.session
-    adverts = db_sess.query(Basket)
+    adverts = db_sess.query(Basket).filter(Basket.user == current_user).first().adverts_ids
+    print(adverts)
+    return 'ooo'
