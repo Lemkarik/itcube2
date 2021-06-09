@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 
-from configs import Develop
+from config import Develop
 
 app = Flask(__name__)
 app.config.from_object(Develop)
@@ -14,7 +14,9 @@ login_manager.init_app(app)
 db = SQLAlchemy(app)
 
 from data.users import User
+from data.adverts import Adverts
 from forms.user import RegisterForm, LoginForm
+from data.__all_models import *
 
 
 def get_session():
