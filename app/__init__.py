@@ -137,23 +137,3 @@ def delete_advert(id):
     else:
         abort(404)
     return redirect('/')
-
-
-@app.route('/basket', methods=['GET', 'POST'])
-@login_required
-def basket():
-    db_sess = db.session
-    adverts = db_sess.query(Basket).filter(Basket.user == current_user).first()
-    if adverts:
-        adverts = adverts.adverts_ids
-        print(adverts)
-    print(adverts)
-    return render_template('basket.html')
-
-
-@app.route('/add_to_basket/<int:id>', methods=['GET', 'POST'])
-@login_required
-def basket(id):
-    db_sess = db.session
-    for i in current_user.basket:
-        print(i)
