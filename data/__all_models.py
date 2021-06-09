@@ -1,2 +1,2 @@
-from .adverts import Adverts
-from .users import User
+from . import users
+from . import adverts

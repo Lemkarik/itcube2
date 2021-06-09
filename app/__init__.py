@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user
 
 from config import Develop
 
@@ -36,9 +36,11 @@ def load_user(user_id):
 
 
 @app.route("/")
-def index():
-    # db_sess = db_session.create_session()
-    return render_template("index.html")
+@app.route("/<string:search>")
+def index(search=''):
+    adverts = db.session.query(Adverts).filter((Adverts.title.like(f'%{search}%'))
+                                               | (Adverts.description.like(f'%{search}%')))
+    return render_template("index.html", adverts=adverts)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -65,3 +67,17 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = db.session.query(User).filter(User.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect("/")
+        return render_template('login.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
+    return render_template('login.html', title='Авторизация', form=form)
