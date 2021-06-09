@@ -1,10 +1,9 @@
+import sqlalchemy
 from app import db
 
-import sqlalchemy
 
-
-class Advert(db.Model):
-    __tablename__ = 'users'
+class Adverts(db.Model):
+    __tablename__ = 'adverts'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     title = sqlalchemy.Column(sqlalchemy.String, nullable=False)
