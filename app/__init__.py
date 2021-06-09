@@ -7,11 +7,9 @@ from config import Develop
 
 app = Flask(__name__)
 app.config.from_object(Develop)
-
+db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.init_app(app)
-
-db = SQLAlchemy(app)
 
 from data.users import User
 from data.adverts import Adverts
