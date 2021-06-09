@@ -1,8 +1,8 @@
 import sqlalchemy
-from .db_session import SqlAlchemyBase
+from app import db
 
 
-class User(SqlAlchemyBase):
+class User(db.Model):
     __tablename__ = 'users'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)

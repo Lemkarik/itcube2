@@ -1,10 +1,7 @@
 from flask import Flask, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, login_user
-from data import db_session
-from data.users import User
-from forms.user import RegisterForm, LoginForm
+from flask_login import LoginManager
 
 from configs import Develop
 
@@ -15,6 +12,9 @@ login_manager = LoginManager(app)
 login_manager.init_app(app)
 
 db = SQLAlchemy(app)
+
+from data.users import User
+from forms.user import RegisterForm, LoginForm
 
 
 def get_session():
@@ -31,7 +31,7 @@ with app.app_context():
 
 @login_manager.user_loader
 def load_user(user_id):
-    db_sess = db_session.create_session()
+    db_sess = db.session
     return db_sess.query(User).get(user_id)
 
 
@@ -49,7 +49,7 @@ def reqister():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Пароли не совпадают")
-        db_sess = db_session.create_session()
+        db_sess = db.session
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form,

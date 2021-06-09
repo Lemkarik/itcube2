@@ -1,8 +1,9 @@
+from app import db
+
 import sqlalchemy
-from .db_session import SqlAlchemyBase
 
 
-class Adverts(SqlAlchemyBase):
+class Adverts(db.Model):
     __tablename__ = 'users'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
