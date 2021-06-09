@@ -1,0 +1,8 @@
+div.a {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #ffffff;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+}

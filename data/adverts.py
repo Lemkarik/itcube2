@@ -11,4 +11,5 @@ class Adverts(db.Model):
     description = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     position = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     seller = sqlalchemy.Column(sqlalchemy.String, sqlalchemy.ForeignKey("users.id"), nullable=False)
+    price = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
     user = orm.relation('User')

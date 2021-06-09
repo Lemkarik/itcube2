@@ -1,7 +1,7 @@
-from flask import Flask, render_template, redirect,abort
+from flask import Flask, render_template, redirect, abort, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, login_user, current_user, login_required
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 
 from config import Develop
 
@@ -86,6 +86,13 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
+
 @app.route('/add_advert', methods=['GET', 'POST'])
 @app.route('/edit_advert/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -97,12 +104,12 @@ def add_advert(id=0):
             advert = Adverts(
                 title=form.title.data,
                 description=form.description.data,
-                position=form.position.data
+                position=current_user.position,
+                seller=current_user.id,
+                price=form.price.data
             )
-            advert.set_password(form.password.data)
             db_sess.add(advert)
             db_sess.commit()
-            login_user(advert, remember=True)
             return redirect("/")
         return render_template('edit_advert.html', title='Создание объявления', form=form)
     else:
@@ -136,6 +143,17 @@ def delete_advert(id):
 @login_required
 def basket():
     db_sess = db.session
-    adverts = db_sess.query(Basket).filter(Basket.user == current_user).first().adverts_ids
+    adverts = db_sess.query(Basket).filter(Basket.user == current_user).first()
+    if adverts:
+        adverts = adverts.adverts_ids
+        print(adverts)
     print(adverts)
-    return 'ooo'
+    return render_template('basket.html')
+
+
+@app.route('/add_to_basket/<int:id>', methods=['GET', 'POST'])
+@login_required
+def basket(id):
+    db_sess = db.session
+    for i in current_user.basket:
+        print(i)

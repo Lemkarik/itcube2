@@ -13,6 +13,7 @@ class User(db.Model, UserMixin):
     email = sqlalchemy.Column(db.String, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(db.String, nullable=False)
     role = sqlalchemy.Column(db.Boolean, nullable=False)
+    balance = sqlalchemy.Column(db.Integer, default=9999, nullable=False)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
